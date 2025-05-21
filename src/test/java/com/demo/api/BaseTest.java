@@ -18,6 +18,6 @@ public abstract class BaseTest {
                 .build();
 
         RestAssured.requestSpecification = requestSpecification;
-        System.out.println("BaseTest setup running...");
+        System.out.println("BaseTest setup is running ...");
     }
 }
