@@ -10,10 +10,11 @@ public abstract class BaseTest {
 
     @BeforeAll
     public static void setup(){
-        // Set base URI and API key
+        // Global request specification with API key and base URI
         RequestSpecification requestSpecification = new RequestSpecBuilder()
                 .setBaseUri("https://reqres.in")
                 .addHeader("x-api-key", "reqres-free-v1")
+                .setContentType("application/json")
                 .build();
 
         RestAssured.requestSpecification = requestSpecification;
