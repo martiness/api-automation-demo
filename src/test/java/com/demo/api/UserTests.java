@@ -29,13 +29,12 @@ public class UserTests extends BaseTest {
      */
     @Test
     public void successfulResponseTest() {
-        // Build request with query parameter ?page=2
-        RequestSpecification request = RestAssured
-                .given()
-                .queryParam("page", 2);
-
         // Send GET request to the users endpoint
-        Response response = request.get("/api/users");
+        Response response = RestAssured
+                .given()
+                .spec(RestAssured.requestSpecification)
+                .queryParam("page", 2)
+                .get("/api/users");
 
         // Verify that response status code is 200 OK
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -58,13 +57,13 @@ public class UserTests extends BaseTest {
      */
     @Test
     public void userDataAssertionPageOneTest() {
-        // Build request with query parameter ?page=1
-        RequestSpecification request = RestAssured
-                .given()
-                .queryParam("page", 1);
-
         // Send GET request to the users endpoint
-        Response response = request.get("/api/users");
+        Response response = RestAssured
+                .given()
+                .spec(RestAssured.requestSpecification)
+                .queryParam("page", 1)
+                .when()
+                .get("/api/users");
 
         // Verify that response status code is 200 OK
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -85,7 +84,6 @@ public class UserTests extends BaseTest {
         softly.assertAll();
     }
 
-
     /**
      * SEND:     GET https://reqres.in/api/users?page=2
      * HEADERS:  x-api-key: reqres-free-v1
@@ -100,13 +98,13 @@ public class UserTests extends BaseTest {
      */
     @Test
     public void userDataAssertionPageTwoTest() {
-        // Build request with query parameter ?page=2
-        RequestSpecification request = RestAssured
-                .given()
-                .queryParam("page", 2);
-
         // Send GET request to fetch users on page 2
-        Response response = request.get("/api/users");
+        Response response = RestAssured
+                .given()
+                .spec(RestAssured.requestSpecification)
+                .queryParam("page", 2)
+                .when()
+                .get("/api/users");
 
         // Validate the response status code
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -141,13 +139,13 @@ public class UserTests extends BaseTest {
      */
     @Test
     public void userDataExtractionTest() {
-        // Prepare a request with query parameter page=2
-        RequestSpecification request = RestAssured
+        // Send GET request to fetch users on page 2
+        Response response = RestAssured
                 .given()
-                .queryParam("page", 2);
-
-        // Execute the GET request to fetch user list
-        Response response = request.get("/api/users");
+                .spec(RestAssured.requestSpecification)
+                .queryParam("page", 2)
+                .when()
+                .get("/api/users");
 
         // Ensure we receive a 200 OK response
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -169,7 +167,6 @@ public class UserTests extends BaseTest {
         assertEquals("michael.lawson@reqres.in", email);
     }
 
-
     /**
      * SEND:     GET https://reqres.in/api/users?page=1
      *           GET https://reqres.in/api/users?page=2
@@ -186,15 +183,13 @@ public class UserTests extends BaseTest {
      */
     @Test
     public void extractAndSortUsersByFirstName() {
-
-        // Prepare reusable request specification
-        RequestSpecification request = RestAssured.given();
-
         List<Map<String, Object>> allUsers = new ArrayList<>();
 
         // Loop through page 1 and 2 to extract users
         for (int page = 1; page <= 2; page++) {
-            Response response = request
+            Response response = RestAssured
+                    .given()
+                    .spec(RestAssured.requestSpecification)
                     .queryParam("page", page)
                     .when()
                     .get("/api/users");

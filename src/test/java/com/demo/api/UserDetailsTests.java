@@ -30,11 +30,9 @@ public class UserDetailsTests extends BaseTest{
      */
     @Test
     public void getUserByID_withRequestSpec_shouldReturnUserDetails() {
-        // Prepare request using global specification
-        RequestSpecification request = RestAssured.given();
-
-        // Step 1: Get first page of users and extract the first user ID
-        Response listResponse = request
+        // Get first page of users and extract the first user ID
+        Response listResponse = RestAssured
+                .given()
                 .queryParam("page", 1)
                 .when()
                 .get("/api/users");
@@ -43,8 +41,9 @@ public class UserDetailsTests extends BaseTest{
 
         int userId = listResponse.jsonPath().getInt("data[0].id");
 
-        // Step 2: Request that specific user by ID
-        Response userResponse = request
+        // Request that specific user by ID
+        Response userResponse = RestAssured
+                .given()
                 .when()
                 .get("/api/users/" + userId);
 
@@ -71,11 +70,9 @@ public class UserDetailsTests extends BaseTest{
     public void getNonExistingUser_shouldReturn404() {
         int nonExistingUserId = 999;
 
-        // Prepare request using global specification (includes base URI and headers)
-        RequestSpecification request = RestAssured.given();
-
         // Send GET request for a user that does not exist
-        Response response = request
+        Response response = RestAssured
+                .given()
                 .when()
                 .get("/api/users/" + nonExistingUserId);
 

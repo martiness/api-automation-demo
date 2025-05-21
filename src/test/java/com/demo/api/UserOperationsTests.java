@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NewUserTests extends BaseTest {
+public class UserOperationsTests extends BaseTest {
 
     /**
      * Test aiming to create a unique new user by sending a POST request to the /api/users endpoint.
@@ -42,7 +43,7 @@ public class NewUserTests extends BaseTest {
                 .when()
                 .post("/api/users");
 
-        // Assert status code
+        // Assert successful user creation
         assertEquals(201, response.statusCode(), "Expected 201 Created");
 
         // Parse response and verify
@@ -55,6 +56,49 @@ public class NewUserTests extends BaseTest {
         softly.assertAll();
 
         // Print the created user info
-        System.out.println("New user created: " + json.getString("id"));
+        System.out.println("New created user ID: " + json.getString("id"));
+    }
+
+    /**
+     * Test aiming to delete a newly created user using DELETE request to /api/users/{id}.
+     *
+     * FLOW:
+     *  1. Create a new user via POST /api/users
+     *  2. Extract the generated user ID
+     *  3. Delete the user using DELETE /api/users/{id}
+     *  4. Assert that the response status is 204 (No Content)
+     */
+    @Test
+    public void deleteUser_shouldReturn204() {
+        // Create a user to delete
+        String uniqueName = "ToBeDeleted_" + System.currentTimeMillis();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("name", uniqueName);
+        requestBody.put("job", "To Be Deleted");
+
+        Response createResponse = RestAssured
+                .given()
+                .body(requestBody)
+                .when()
+                .post("/api/users");
+
+        // Assert successful user creation
+        assertEquals(201, createResponse.statusCode(), "Expected 201 Created");
+
+        // Print the created user info
+        String userId = createResponse.jsonPath().getString("id");
+        System.out.println("Created for deletion user ID: " + userId);
+
+        // DELETE the created user
+        Response deleteResponse = RestAssured
+                .given()
+                .when()
+                .delete("/api/users/" + userId);
+
+        // Assert DELETE response status
+        assertEquals(204, deleteResponse.statusCode(), "Expected 204 No Content after deletion");
+
+        // Assert body is empty
+        assertTrue(deleteResponse.getBody().asString().isEmpty(), "Expected empty body after deletion");
     }
 }
