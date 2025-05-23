@@ -39,6 +39,7 @@ public class UserOperationsTests extends BaseTest {
         // Send POST request
         Response response = RestAssured
                 .given()
+                .spec(withApiKey)
                 .body(requestBody)
                 .when()
                 .post("/api/users");
@@ -76,8 +77,10 @@ public class UserOperationsTests extends BaseTest {
         requestBody.put("name", uniqueName);
         requestBody.put("job", "To Be Deleted");
 
+        //Create response
         Response createResponse = RestAssured
                 .given()
+                .spec(withApiKey)
                 .body(requestBody)
                 .when()
                 .post("/api/users");
@@ -92,6 +95,7 @@ public class UserOperationsTests extends BaseTest {
         // DELETE the created user
         Response deleteResponse = RestAssured
                 .given()
+                .spec(withApiKey)
                 .when()
                 .delete("/api/users/" + userId);
 

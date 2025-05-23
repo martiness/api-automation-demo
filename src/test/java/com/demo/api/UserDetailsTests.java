@@ -33,6 +33,7 @@ public class UserDetailsTests extends BaseTest{
         // Get first page of users and extract the first user ID
         Response listResponse = RestAssured
                 .given()
+                .spec(withApiKey)
                 .queryParam("page", 1)
                 .when()
                 .get("/api/users");
@@ -44,12 +45,13 @@ public class UserDetailsTests extends BaseTest{
         // Request that specific user by ID
         Response userResponse = RestAssured
                 .given()
+                .spec(withApiKey)
                 .when()
                 .get("/api/users/" + userId);
 
         assertEquals(200, userResponse.statusCode(), "Expected 200 OK");
 
-        // Step 3: Validate user details
+        // Validate user details
         JsonPath jsonPath = userResponse.jsonPath();
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(jsonPath.getInt("data.id")).isEqualTo(userId);
@@ -73,6 +75,7 @@ public class UserDetailsTests extends BaseTest{
         // Send GET request for a user that does not exist
         Response response = RestAssured
                 .given()
+                .spec(withApiKey)
                 .when()
                 .get("/api/users/" + nonExistingUserId);
 

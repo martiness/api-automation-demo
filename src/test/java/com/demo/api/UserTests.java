@@ -32,7 +32,7 @@ public class UserTests extends BaseTest {
         // Send GET request to the users endpoint
         Response response = RestAssured
                 .given()
-                .spec(RestAssured.requestSpecification)
+                .spec(withoutApiKey)
                 .queryParam("page", 2)
                 .get("/api/users");
 
@@ -60,7 +60,7 @@ public class UserTests extends BaseTest {
         // Send GET request to the users endpoint
         Response response = RestAssured
                 .given()
-                .spec(RestAssured.requestSpecification)
+                .spec(withoutApiKey)
                 .queryParam("page", 1)
                 .when()
                 .get("/api/users");
@@ -101,7 +101,7 @@ public class UserTests extends BaseTest {
         // Send GET request to fetch users on page 2
         Response response = RestAssured
                 .given()
-                .spec(RestAssured.requestSpecification)
+                .spec(withoutApiKey)
                 .queryParam("page", 2)
                 .when()
                 .get("/api/users");
@@ -142,7 +142,7 @@ public class UserTests extends BaseTest {
         // Send GET request to fetch users on page 2
         Response response = RestAssured
                 .given()
-                .spec(RestAssured.requestSpecification)
+                .spec(withoutApiKey)
                 .queryParam("page", 2)
                 .when()
                 .get("/api/users");
@@ -189,7 +189,7 @@ public class UserTests extends BaseTest {
         for (int page = 1; page <= 2; page++) {
             Response response = RestAssured
                     .given()
-                    .spec(RestAssured.requestSpecification)
+                    .spec(withoutApiKey)
                     .queryParam("page", page)
                     .when()
                     .get("/api/users");
