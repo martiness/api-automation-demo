@@ -2,7 +2,6 @@ package com.demo.api;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserTests extends BaseTest {
+public class UserScenarioTests extends BaseTest {
 
     /**
      * SEND:     GET https://reqres.in/api/users?page=2

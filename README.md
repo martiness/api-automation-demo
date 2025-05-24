@@ -83,6 +83,12 @@ The tests are organized by type:
 
 The `BaseTest` class sets up a shared request specification for all tests.
 
+Project uses `src/test/resources/config.properties` for base URI and API key.
+
+Example:
+base.uri=https://reqres.in
+api.key=reqres-free-v1
+
 ```java
 RequestSpecBuilder()
     .setBaseUri("https://reqres.in")

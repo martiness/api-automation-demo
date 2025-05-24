@@ -1,9 +1,7 @@
 package com.demo.api;
 
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -32,12 +30,13 @@ public abstract class BaseTest {
     @BeforeEach
     public void setup() {
         // Retrieve base URL from system properties or fallback to default (used for flexibility in environments)
-        String baseUrl = System.getProperty("baseUrl", "https://reqres.in");
+        String baseUrl = Config.getBaseUri();
+        String apiKey = Config.getApiKey();
 
         // Specification used for endpoints that require authentication (e.g. POST, PUT, DELETE)
         withApiKey = new RequestSpecBuilder()
                 .setBaseUri(baseUrl)
-                .addHeader("x-api-key", "reqres-free-v1") // Simulated API key for demo endpoints
+                .addHeader("x-api-key", apiKey) // Simulated API key for demo endpoints
                 .setContentType("application/json")
                 .build();
 
