@@ -2,6 +2,7 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserScenarioTests extends BaseTest {
+/**
+ * Contains tests for retrieving user data via GET requests.
+ * Covers pagination, user details, and sorting logic.
+ */
+public class UserReadTests extends BaseTest {
 
     /**
      * SEND:     GET https://reqres.in/api/users?page=2
@@ -28,7 +33,7 @@ public class UserScenarioTests extends BaseTest {
      *    - Print the response body for manual inspection (exploratory/debugging use).
      */
     @Test
-    public void successfulResponseTest() {
+    public void shouldReturnUserList_whenRequestingPage2() {
         // Send GET request to the users endpoint
         Response response = RestAssured
                 .given()
@@ -56,7 +61,7 @@ public class UserScenarioTests extends BaseTest {
      *      first name, last name, email, and avatar.
      */
     @Test
-    public void userDataAssertionPageOneTest() {
+    public void shouldMatchExpectedUserData_onPageOne() {
         // Send GET request to the users endpoint
         Response response = RestAssured
                 .given()
@@ -97,7 +102,7 @@ public class UserScenarioTests extends BaseTest {
      *      first name, last name, email, and avatar.
      */
     @Test
-    public void userDataAssertionPageTwoTest() {
+    public void shouldMatchExpectedUserData_onPageTwo() {
         // Send GET request to fetch users on page 2
         Response response = RestAssured
                 .given()
@@ -138,7 +143,7 @@ public class UserScenarioTests extends BaseTest {
      *    - Assert the values match expected data.
      */
     @Test
-    public void userDataExtractionTest() {
+    public void shouldExtractUserData_whenResponseIsValid() {
         // Send GET request to fetch users on page 2
         Response response = RestAssured
                 .given()
@@ -182,7 +187,7 @@ public class UserScenarioTests extends BaseTest {
      *    - Assert the total number of users is 12.
      */
     @Test
-    public void extractAndSortUsersByFirstName() {
+    public void shouldSortUsersAlphabeticallyByFirstName() {
         List<Map<String, Object>> allUsers = new ArrayList<>();
 
         // Loop through page 1 and 2 to extract users
@@ -215,5 +220,82 @@ public class UserScenarioTests extends BaseTest {
 
         // Validate total number of users retrieved and sorted
         assertEquals(12, allUsers.size(), "Expected 12 users total");
+    }
+
+    /**
+     * Test to verify that a specific user can be retrieved by ID and that their details are correct.
+     *
+     * FLOW:
+     * 1. GET all users on page 1 to extract a valid user ID.
+     * 2. Use the extracted ID to GET /api/users/{id}.
+     * 3. Validate user response fields such as id, first name, last name, and email.
+     *
+     * SEND:
+     *   - GET https://reqres.in/api/users?page=1
+     *   - GET https://reqres.in/api/users/{userId}
+     * HEADERS:
+     *   - x-api-key: reqres-free-v1 (set globally in BaseTest)
+     * EXPECT:
+     *   - Status 200 OK
+     *   - Valid and non-null user details in response
+     */
+    @Test
+    public void shouldReturnUserDetails_whenFetchingById() {
+        // Get first page of users and extract the first user ID
+        Response listResponse = RestAssured
+                .given()
+                .spec(withApiKey)
+                .queryParam("page", 1)
+                .when()
+                .get("/api/users");
+
+        assertEquals(200, listResponse.statusCode(), "Expected 200 OK");
+
+        int userId = listResponse.jsonPath().getInt("data[0].id");
+
+        // Request that specific user by ID
+        Response userResponse = RestAssured
+                .given()
+                .spec(withApiKey)
+                .when()
+                .get("/api/users/" + userId);
+
+        assertEquals(200, userResponse.statusCode(), "Expected 200 OK");
+
+        // Validate user details
+        JsonPath jsonPath = userResponse.jsonPath();
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(jsonPath.getInt("data.id")).isEqualTo(userId);
+        softly.assertThat(jsonPath.getString("data.first_name")).isNotNull();
+        softly.assertThat(jsonPath.getString("data.last_name")).isNotNull();
+        softly.assertThat(jsonPath.getString("data.email")).contains("@reqres.in");
+        softly.assertAll();
+    }
+
+    /**
+     * Test to verify that requesting a non-existing user returns 404 Not Found.
+     *
+     * SEND:    GET https://reqres.in/api/users/999
+     * HEADERS: x-api-key: reqres-free-v1 (set globally via BaseTest)
+     * EXPECT:  Status 404 and empty JSON body "{}"
+     */
+    @Test
+    public void shouldReturn404_whenUserIdIsInvalid() {
+        int nonExistingUserId = 999;
+
+        // Send GET request for a user that does not exist
+        Response response = RestAssured
+                .given()
+                .spec(withApiKey)
+                .when()
+                .get("/api/users/" + nonExistingUserId);
+
+        // Assert that response status is 404 Not Found
+        assertEquals(404, response.statusCode(), "Expected 404 Not Found");
+
+        // Assert that response body is an empty JSON object
+        String responseBody = response.getBody().asString();
+        System.out.println("Response body content: " + responseBody);
+        assertEquals("{}", responseBody.trim(), "Expected empty JSON body");
     }
 }
