@@ -1,9 +1,9 @@
-package com.demo.api;
+package com.demo.api.tests;
 
+import com.demo.api.untilities.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
