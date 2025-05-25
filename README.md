@@ -1,16 +1,17 @@
 # API Automation Demo
 
-This project is a simple API automation test suite using **Java**, **JUnit 5**, and **RestAssured** to validate the functionality of a public REST API service [reqres.in](https://reqres.in/). It is developed as part of a testing challenge and demonstrates practical REST API testing techniques.
+This project is an API automation test suite built with **Java**, **JUnit 5**, and **RestAssured**.  
+It validates the functionality of the public REST API service [reqres.in](https://reqres.in/) and was developed as part of a QA automation challenge.
 
 ---
 
 ## ✅ Technologies Used
 
-* Java 11
-* Maven
-* JUnit 5
-* RestAssured
-* AssertJ
+- Java 11  
+- Maven  
+- JUnit 5  
+- RestAssured  
+- AssertJ  
 
 ---
 
@@ -35,68 +36,31 @@ mvn clean install
 mvn clean test
 ```
 
-### 4. Run tests with a different base URL (optional)
+---
 
-```bash
-mvn clean test -DbaseUrl=https://reqres.in
+## 🔧 Configuration
+
+The project loads configuration values from a `config.properties` file located at:
+
+```
+src/test/resources/config.properties
 ```
 
----
+Example content:
 
-## 📖 Test Structure
-
-The tests are organized by type:
-
-### `UserTests.java`
-
-* Validate list of users with pagination
-* Validate fields in the user JSON
-* Extract user data and assert values
-* Sort all users by first name
-
-### `UserDetailsTests.java`
-
-* Fetch single user details using `/api/users/{id}`
-* Assert user data presence
-* Handle and assert non-existing users (expect 404)
-
-### `UserOperationsTests.java`
-
-* Create a new user with `POST /api/users`
-* Delete user using `DELETE /api/users/{id}`
-
----
-
-## ✅ Test Scenarios Covered
-
-| Endpoint                  | Method | Description                           |
-| ------------------------- | ------ | ------------------------------------- |
-| `/api/users?page=1`       | GET    | List users                            |
-| `/api/users/{id}`         | GET    | Get details of specific user          |
-| `/api/users`              | POST   | Create new user with random name      |
-| `/api/users/{id}`         | DELETE | Delete newly created user             |
-| `/api/users/{invalid-id}` | GET    | Handle invalid user id and assert 404 |
-
----
-
-## ⚖️ Configuration
-
-The `BaseTest` class sets up a shared request specification for all tests.
-
-Project uses `src/test/resources/config.properties` for base URI and API key.
-
-Example:
+```properties
 base.uri=https://reqres.in
 api.key=reqres-free-v1
-
-```java
-RequestSpecBuilder()
-    .setBaseUri("https://reqres.in")
-    .addHeader("x-api-key", "reqres-free-v1")
-    .setContentType("application/json")
 ```
 
-The `baseUrl` can be overridden via system property:
+These values are used by the `BaseTest` class via the `Config` utility:
+
+```java
+.setBaseUri(Config.getBaseUri())
+.addHeader("x-api-key", Config.getApiKey())
+```
+
+You can override the base URI via a system property (optional):
 
 ```bash
 mvn test -DbaseUrl=https://your-env-url.com
@@ -104,34 +68,67 @@ mvn test -DbaseUrl=https://your-env-url.com
 
 ---
 
+## 🧪 Test Structure
+
+Tests are organized into separate classes by use case:
+
+### `UserTests.java`
+- List users with pagination
+- Extract fields from JSON and assert values
+- Sort users by first name
+
+### `UserDetailsTests.java`
+- Fetch a single user by ID
+- Validate fields in user response
+- Handle and assert 404 for non-existent user
+
+### `UserOperationsTests.java`
+- Create user via `POST`
+- Delete user via `DELETE`
+
+---
+
+## ✅ Test Scenarios Covered
+
+| Endpoint                  | Method | Description                           |
+|--------------------------|--------|---------------------------------------|
+| `/api/users?page=1`       | GET    | List users                            |
+| `/api/users/{id}`         | GET    | Get user details                      |
+| `/api/users`              | POST   | Create new user                       |
+| `/api/users/{id}`         | DELETE | Delete newly created user             |
+| `/api/users/{invalid-id}` | GET    | Assert 404 on invalid user ID         |
+
+---
+
 ## 📃 Sample Output
 
-Example output when sorting users by first name:
+Example console output when sorting users:
 
 ```
 Sorted Users by First Name:
  - Byron Fields | byron.fields@reqres.in
  - Charles Morris | charles.morris@reqres.in
- - ...
+...
 ```
 
 ---
 
-## 🚀 Improvements for the Future
+## 🚀 Future Improvements
 
-* Integrate Allure for HTML reports
-* Use environment-specific configuration files
-* Mock API requests for isolated testing
+- Integrate Allure for test reporting
+- Use environment-based configuration profiles
+- Add mocking layer for isolated test scenarios
+- Add CI pipeline (e.g. GitHub Actions)
 
 ---
 
 ## © License
 
-This project is licensed under the MIT License.
+MIT License
 
 ---
 
-## ✉️ Contact
+## ✉️ Author
 
 Martin Kenov
 

@@ -5,50 +5,52 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
- * Abstract base class for setting up common REST-assured configurations.
+ * Abstract base class for configuring reusable REST-assured request specifications.
  *
- * <p>This class defines two reusable request specifications:
+ * <p>This class defines two common {@link RequestSpecification} objects:</p>
  * <ul>
- *     <li><strong>withApiKey</strong> – for endpoints that require authentication using an API key.</li>
- *     <li><strong>withoutApiKey</strong> – for public or negative test cases that don't require authentication.</li>
+ *     <li><strong>withApiKey</strong> – used for authenticated API requests (e.g. POST, PUT, DELETE).</li>
+ *     <li><strong>withoutApiKey</strong> – used for public or negative test scenarios (e.g. GET).</li>
  * </ul>
  *
- * <p>Each test class that extends this base can choose the appropriate specification depending on the endpoint being tested.
+ * <p>Configuration values such as the base URI and API key are loaded from {@code config.properties}
+ * using the {@link Config} utility class.</p>
+ *
+ * <p>All test classes should extend this base class to reuse and standardize request configurations.</p>
  */
 public abstract class BaseTest {
 
-    /** Request specification including API key header (used for authenticated endpoints). */
+    /** Request specification for endpoints that require authentication via API key. */
     protected RequestSpecification withApiKey;
 
-    /** Request specification without API key (used for public or unauthorized scenarios). */
+    /** Request specification for endpoints that do not require authentication. */
     protected RequestSpecification withoutApiKey;
 
     /**
      * Initializes both request specifications before each test.
-     * This ensures fresh and consistent configurations for every test case.
+     * This ensures consistent and reusable setup across all test cases.
      */
     @BeforeEach
     public void setup() {
-        // Retrieve base URL from system properties or fallback to default (used for flexibility in environments)
+        // Load configuration values
         String baseUrl = Config.getBaseUri();
         String apiKey = Config.getApiKey();
 
-        // Specification used for endpoints that require authentication (e.g. POST, PUT, DELETE)
+        // Specification with API key for authenticated requests
         withApiKey = new RequestSpecBuilder()
                 .setBaseUri(baseUrl)
-                .addHeader("x-api-key", apiKey) // Simulated API key for demo endpoints
+                .addHeader("x-api-key", apiKey)
                 .setContentType("application/json")
                 .build();
 
-        // Specification used for endpoints that don't require authentication (e.g. GET public data)
+        // Specification without API key for unauthenticated or negative tests
         withoutApiKey = new RequestSpecBuilder()
                 .setBaseUri(baseUrl)
                 .setContentType("application/json")
                 .build();
 
-        // Console output for verification/debug purposes
+        // Debug output (optional)
         System.out.println("Base URL used: " + baseUrl);
         System.out.println("[BaseTest] Setup complete before each test.");
     }
 }
-

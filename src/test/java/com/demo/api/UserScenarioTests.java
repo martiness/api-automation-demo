@@ -188,7 +188,7 @@ public class UserScenarioTests extends BaseTest {
         for (int page = 1; page <= 2; page++) {
             Response response = RestAssured
                     .given()
-                    .spec(withoutApiKey)
+                    .spec(withApiKey)
                     .queryParam("page", page)
                     .when()
                     .get("/api/users");
