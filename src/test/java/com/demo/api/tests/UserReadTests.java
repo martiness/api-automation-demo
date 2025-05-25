@@ -1,7 +1,7 @@
 package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
-import io.restassured.RestAssured;
+import com.demo.api.utilities.UserApiHelper;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
@@ -35,11 +35,7 @@ public class UserReadTests extends BaseTest {
     @Test
     public void shouldReturnUserList_whenRequestingPage2() {
         // Send GET request to the users endpoint
-        Response response = RestAssured
-                .given()
-                .spec(withoutApiKey)
-                .queryParam("page", 2)
-                .get("/api/users");
+        Response response = UserApiHelper.listUsers(withApiKey, 2);
 
         // Verify that response status code is 200 OK
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -63,12 +59,7 @@ public class UserReadTests extends BaseTest {
     @Test
     public void shouldMatchExpectedUserData_onPageOne() {
         // Send GET request to the users endpoint
-        Response response = RestAssured
-                .given()
-                .spec(withoutApiKey)
-                .queryParam("page", 1)
-                .when()
-                .get("/api/users");
+        Response response = UserApiHelper.listUsers(withApiKey, 1);
 
         // Verify that response status code is 200 OK
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -80,12 +71,20 @@ public class UserReadTests extends BaseTest {
         // Extract and validate first user details
         Map<String, Object> firstUser = users.get(0);
 
-        // Use soft assertions to validate all fields without failing immediately
+        // Soft assertions for user fields
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(firstUser.get("first_name")).isEqualTo("George");
-        softly.assertThat(firstUser.get("last_name")).isEqualTo("Bluth");
-        softly.assertThat(firstUser.get("email")).isEqualTo("george.bluth@reqres.in");
-        softly.assertThat(firstUser.get("avatar")).isEqualTo("https://reqres.in/img/faces/1-image.jpg");
+        softly.assertThat(firstUser.get("first_name"))
+                .as("First Name")
+                .isEqualTo("George");
+        softly.assertThat(firstUser.get("last_name"))
+                .as("Last Name")
+                .isEqualTo("Bluth");
+        softly.assertThat(firstUser.get("email"))
+                .as("Email")
+                .isEqualTo("george.bluth@reqres.in");
+        softly.assertThat(firstUser.get("avatar"))
+                .as("Avatar URL")
+                .isEqualTo("https://reqres.in/img/faces/1-image.jpg");
         softly.assertAll();
     }
 
@@ -104,12 +103,7 @@ public class UserReadTests extends BaseTest {
     @Test
     public void shouldMatchExpectedUserData_onPageTwo() {
         // Send GET request to fetch users on page 2
-        Response response = RestAssured
-                .given()
-                .spec(withoutApiKey)
-                .queryParam("page", 2)
-                .when()
-                .get("/api/users");
+        Response response = UserApiHelper.listUsers(withApiKey, 2);
 
         // Validate the response status code
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -121,12 +115,20 @@ public class UserReadTests extends BaseTest {
         // Access the first user in the list
         Map<String, Object> firstUser = users.get(0);
 
-        // Use soft assertions to check all relevant user fields
+        // Use soft assertions for clarity
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(firstUser.get("first_name")).isEqualTo("Michael");
-        softly.assertThat(firstUser.get("last_name")).isEqualTo("Lawson");
-        softly.assertThat(firstUser.get("email")).isEqualTo("michael.lawson@reqres.in");
-        softly.assertThat(firstUser.get("avatar")).isEqualTo("https://reqres.in/img/faces/7-image.jpg");
+        softly.assertThat(firstUser.get("first_name"))
+                .as("First Name")
+                .isEqualTo("Michael");
+        softly.assertThat(firstUser.get("last_name"))
+                .as("Last Name")
+                .isEqualTo("Lawson");
+        softly.assertThat(firstUser.get("email"))
+                .as("Email")
+                .isEqualTo("michael.lawson@reqres.in");
+        softly.assertThat(firstUser.get("avatar"))
+                .as("Avatar URL")
+                .isEqualTo("https://reqres.in/img/faces/7-image.jpg");
         softly.assertAll();
     }
 
@@ -145,12 +147,7 @@ public class UserReadTests extends BaseTest {
     @Test
     public void shouldExtractUserData_whenResponseIsValid() {
         // Send GET request to fetch users on page 2
-        Response response = RestAssured
-                .given()
-                .spec(withoutApiKey)
-                .queryParam("page", 2)
-                .when()
-                .get("/api/users");
+        Response response = UserApiHelper.listUsers(withApiKey, 2);
 
         // Ensure we receive a 200 OK response
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -192,12 +189,7 @@ public class UserReadTests extends BaseTest {
 
         // Loop through page 1 and 2 to extract users
         for (int page = 1; page <= 2; page++) {
-            Response response = RestAssured
-                    .given()
-                    .spec(withApiKey)
-                    .queryParam("page", page)
-                    .when()
-                    .get("/api/users");
+            Response response = UserApiHelper.listUsers(withApiKey, page);
 
             // Assert that the request returns HTTP 200
             assertEquals(200, response.getStatusCode(), "Expected 200 OK");
@@ -242,33 +234,31 @@ public class UserReadTests extends BaseTest {
     @Test
     public void shouldReturnUserDetails_whenFetchingById() {
         // Get first page of users and extract the first user ID
-        Response listResponse = RestAssured
-                .given()
-                .spec(withApiKey)
-                .queryParam("page", 1)
-                .when()
-                .get("/api/users");
+        Response listResponse = UserApiHelper.listUsers(withApiKey, 1);
 
         assertEquals(200, listResponse.statusCode(), "Expected 200 OK");
 
         int userId = listResponse.jsonPath().getInt("data[0].id");
 
-        // Request that specific user by ID
-        Response userResponse = RestAssured
-                .given()
-                .spec(withApiKey)
-                .when()
-                .get("/api/users/" + userId);
-
+        // Fetch specific user by ID using helper
+        Response userResponse = UserApiHelper.getUserById(withApiKey, userId);
         assertEquals(200, userResponse.statusCode(), "Expected 200 OK");
 
-        // Validate user details
+        // Validate user details with soft assertions
         JsonPath jsonPath = userResponse.jsonPath();
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(jsonPath.getInt("data.id")).isEqualTo(userId);
-        softly.assertThat(jsonPath.getString("data.first_name")).isNotNull();
-        softly.assertThat(jsonPath.getString("data.last_name")).isNotNull();
-        softly.assertThat(jsonPath.getString("data.email")).contains("@reqres.in");
+        softly.assertThat(jsonPath.getInt("data.id"))
+                .as("User ID")
+                .isEqualTo(userId);
+        softly.assertThat(jsonPath.getString("data.first_name"))
+                .as("First Name")
+                .isNotNull();
+        softly.assertThat(jsonPath.getString("data.last_name"))
+                .as("Last Name")
+                .isNotNull();
+        softly.assertThat(jsonPath.getString("data.email"))
+                .as("Email")
+                .contains("@reqres.in");
         softly.assertAll();
     }
 
@@ -284,11 +274,7 @@ public class UserReadTests extends BaseTest {
         int nonExistingUserId = 999;
 
         // Send GET request for a user that does not exist
-        Response response = RestAssured
-                .given()
-                .spec(withApiKey)
-                .when()
-                .get("/api/users/" + nonExistingUserId);
+        Response response = UserApiHelper.getUserById(withApiKey, nonExistingUserId);
 
         // Assert that response status is 404 Not Found
         assertEquals(404, response.statusCode(), "Expected 404 Not Found");

@@ -70,21 +70,24 @@ mvn test -DbaseUrl=https://your-env-url.com
 
 ## 🧪 Test Structure
 
-Tests are organized into separate classes by use case:
+Tests are organized into packages and classes according to CRUD responsibilities:
+📂 com.demo.api.tests
 
-### `UserTests.java`
-- List users with pagination
-- Extract fields from JSON and assert values
-- Sort users by first name
+    UserCreateTests.java – POST: Create a new user
 
-### `UserDetailsTests.java`
-- Fetch a single user by ID
-- Validate fields in user response
-- Handle and assert 404 for non-existent user
+    UserReadTests.java – GET: List users, get user by ID, extract/sort/validate user data
 
-### `UserOperationsTests.java`
-- Create user via `POST`
-- Delete user via `DELETE`
+    UserDeleteTests.java – DELETE: Delete user by ID
+
+📂 com.demo.api.utilities
+
+    BaseTest.java – common RestAssured setup with request specs
+
+    Config.java – loads API configuration from properties file
+
+    UserApiHelper.java – contains reusable helper methods for API calls
+
+All tests now use UserApiHelper to encapsulate RestAssured request logic and follow clean code and SOLID design principles.
 
 ---
 

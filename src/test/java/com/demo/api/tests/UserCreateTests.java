@@ -1,7 +1,7 @@
 package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
-import io.restassured.RestAssured;
+import com.demo.api.utilities.UserApiHelper;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
@@ -31,33 +31,38 @@ public class UserCreateTests extends BaseTest {
     @Test
     public void shouldCreateNewUser_whenPostingValidData()
     {
-        // Prepare payload (with generated unique name)
+        // Generate unique user name
         String uniqueName = "John_" + System.currentTimeMillis();
+
+        // Prepare request body
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("name", uniqueName);
         requestBody.put("job", "QA Engineer");
 
-        // Send POST request
-        Response response = RestAssured
-                .given()
-                .spec(withApiKey)
-                .body(requestBody)
-                .when()
-                .post("/api/users");
+        // Send POST request using helper
+        Response response = UserApiHelper.createUser(withApiKey, requestBody);
 
-        // Assert successful user creation
+        // Assert status code
         assertEquals(201, response.statusCode(), "Expected 201 Created");
 
-        // Parse response and verify
+        // Parse and assert response body
         JsonPath json = response.jsonPath();
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(json.getString("name")).isEqualTo(uniqueName);
-        softly.assertThat(json.getString("job")).isEqualTo("QA Engineer");
-        softly.assertThat(json.getString("id")).isNotNull();
-        softly.assertThat(json.getString("createdAt")).isNotNull();
+        softly.assertThat(json.getString("name"))
+                .as("Check name field")
+                .isEqualTo(uniqueName);
+        softly.assertThat(json.getString("job"))
+                .as("Check job field")
+                .isEqualTo("QA Engineer");
+        softly.assertThat(json.getString("id"))
+                .as("Check id presence")
+                .isNotNull();
+        softly.assertThat(json.getString("createdAt"))
+                .as("Check creation timestamp")
+                .isNotNull();
         softly.assertAll();
 
-        // Print the created user info
+        // Log created user ID
         System.out.println("New created user ID: " + json.getString("id"));
     }
 }

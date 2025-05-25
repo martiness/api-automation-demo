@@ -1,7 +1,7 @@
 package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
-import io.restassured.RestAssured;
+import com.demo.api.utilities.UserApiHelper;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
@@ -27,38 +27,29 @@ public class UserDeleteTests extends BaseTest {
      */
     @Test
     public void shouldDeleteUserSuccessfully_whenUserExists() {
-        // Create a user to delete
+        // Generate unique user name
         String uniqueName = "ToBeDeleted_" + System.currentTimeMillis();
+
+        // Prepare request body
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("name", uniqueName);
         requestBody.put("job", "To Be Deleted");
 
-        //Create response
-        Response createResponse = RestAssured
-                .given()
-                .spec(withApiKey)
-                .body(requestBody)
-                .when()
-                .post("/api/users");
-
-        // Assert successful user creation
+        // Create user via helper
+        Response createResponse = UserApiHelper.createUser(withApiKey, requestBody);
         assertEquals(201, createResponse.statusCode(), "Expected 201 Created");
 
-        // Print the created user info
+        // Extract user ID
         String userId = createResponse.jsonPath().getString("id");
-        System.out.println("Created for deletion user ID: " + userId);
+        System.out.println("Created user ID for deletion: " + userId);
 
-        // DELETE the created user
-        Response deleteResponse = RestAssured
-                .given()
-                .spec(withApiKey)
-                .when()
-                .delete("/api/users/" + userId);
+        // Delete user via helper
+        Response deleteResponse = UserApiHelper.deleteUserById(withApiKey, userId);
 
-        // Assert DELETE response status
+        // Assert DELETE response
         assertEquals(204, deleteResponse.statusCode(), "Expected 204 No Content after deletion");
 
-        // Assert body is empty
+        // Additional Assert response body is empty
         assertTrue(deleteResponse.getBody().asString().isEmpty(), "Expected empty body after deletion");
     }
 }
