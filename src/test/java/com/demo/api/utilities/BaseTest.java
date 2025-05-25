@@ -1,4 +1,4 @@
-package com.demo.api.untilities;
+package com.demo.api.utilities;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;

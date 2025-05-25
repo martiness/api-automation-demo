@@ -1,6 +1,6 @@
 package com.demo.api.tests;
 
-import com.demo.api.untilities.BaseTest;
+import com.demo.api.utilities.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
