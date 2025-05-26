@@ -50,4 +50,5 @@ Thumbs.db
 
 # Allure test results
 allure-results/
-/.allure/
+allure-report/
+.allure/

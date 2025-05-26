@@ -2,7 +2,10 @@ package com.demo.api.utilities;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import io.qameta.allure.junit5.AllureJunit5;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Abstract base class for configuring reusable REST-assured request specifications.
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
  *
  * <p>All test classes should extend this base class to reuse and standardize request configurations.</p>
  */
+@ExtendWith(AllureJunit5.class)
 public abstract class BaseTest {
 
     /** Request specification for endpoints that require authentication via API key. */

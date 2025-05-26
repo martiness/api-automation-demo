@@ -2,9 +2,11 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
+import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -28,6 +30,12 @@ public class UserCreateTests extends BaseTest {
      *   Status: 201 Created
      *   Body:   Contains name, job, id, createdAt
      */
+    @Epic("User API")
+    @Feature("Create User")
+    @Story("As a tester, I want to create a user via POST")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("User Creation")
+    @Description("Test aiming to create a unique new user by sending a POST request to the /api/users endpoint.")
     @Test
     public void shouldCreateNewUser_whenPostingValidData()
     {

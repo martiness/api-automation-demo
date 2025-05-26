@@ -2,9 +2,11 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
+import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -32,6 +34,12 @@ public class UserReadTests extends BaseTest {
      *      when requesting users on page 2.
      *    - Print the response body for manual inspection (exploratory/debugging use).
      */
+    @Epic("User API")
+    @Feature("Read User")
+    @Story("As a tester, I want to send GET request and receive users list")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Users List")
+    @Description("Validate that the `/api/users` endpoint returns a successful (200 OK) response")
     @Test
     public void shouldReturnUserList_whenRequestingPage2() {
         // Send GET request to the users endpoint

@@ -1,7 +1,7 @@
 # API Automation Demo
 
 This project is an API automation test suite built with **Java**, **JUnit 5**, and **RestAssured**.  
-It validates the functionality of the public REST API service [reqres.in](https://reqres.in/) and was developed as part of a QA automation challenge.
+It validates the functionality of the public REST API service [reqres.in](https://reqres.in/)
 
 ---
 
@@ -55,9 +55,9 @@ api.key=reqres-free-v1
 
 These values are used by the `BaseTest` class via the `Config` utility:
 
-```java
+``` java 
 .setBaseUri(Config.getBaseUri())
-.addHeader("x-api-key", Config.getApiKey())
+.addHeader("x-api-key", Config.getApiKey()) 
 ```
 
 You can override the base URI via a system property (optional):
@@ -116,9 +116,18 @@ Sorted Users by First Name:
 
 ---
 
+## 🧪 Allure Reporting
+
+After running the tests, generate and view the Allure HTML report with:
+
+```bash
+mvn clean test
+mvn allure:serve
+
+```
+
 ## 🚀 Future Improvements
 
-- Integrate Allure for test reporting
 - Use environment-based configuration profiles
 - Add mocking layer for isolated test scenarios
 - Add CI pipeline (e.g. GitHub Actions)

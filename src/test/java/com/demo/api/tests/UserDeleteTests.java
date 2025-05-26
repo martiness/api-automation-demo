@@ -2,7 +2,9 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -18,13 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UserDeleteTests extends BaseTest {
     /**
      * Test aiming to delete a newly created user using DELETE request to /api/users/{id}.
-     *
      * FLOW:
      *  1. Create a new user via POST /api/users
      *  2. Extract the generated user ID
      *  3. Delete the user using DELETE /api/users/{id}
      *  4. Assert that the response status is 204 (No Content)
      */
+    @Epic("User API")
+    @Feature("Delete User")
+    @Story("As a tester, I want to Delete the user using DELETE T")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("User Deletion")
+    @Description("Test aiming to delete a newly created user using DELETE request to /api/users/{id}.")
     @Test
     public void shouldDeleteUserSuccessfully_whenUserExists() {
         // Generate unique user name
