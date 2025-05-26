@@ -5,12 +5,15 @@ import com.demo.api.utilities.UserApiHelper;
 import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Covers listing users, fetching by ID, and negative cases (non-existing users).
  */
 public class UserCreateTests extends BaseTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserCreateTests.class);
     /**
      * Test aiming to create a unique new user by sending a POST request to the /api/users endpoint.
      *
@@ -71,6 +76,6 @@ public class UserCreateTests extends BaseTest {
         softly.assertAll();
 
         // Log created user ID
-        System.out.println("New created user ID: " + json.getString("id"));
+        LOGGER.info("New created user ID: " + json.getString("id"));
     }
 }

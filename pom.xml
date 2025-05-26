@@ -7,12 +7,15 @@
     <artifactId>api-automation-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>API Automation Demo</name>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
+
         <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -20,6 +23,7 @@
             <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
+
         <!-- RestAssured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -27,6 +31,7 @@
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
+
         <!-- JSON Path -->
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -34,12 +39,14 @@
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
+
         <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
         </dependency>
+
         <!-- AssertJ -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -47,6 +54,7 @@
             <version>3.25.3</version>
             <scope>test</scope>
         </dependency>
+
         <!-- Allure -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -54,9 +62,26 @@
             <version>2.13.9</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Logging API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+        <!-- Logging implementation -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+        </dependency>
+
     </dependencies>
+
     <build>
         <plugins>
+
             <!-- Maven Surefire plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -68,6 +93,7 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
             <!-- Allure Maven plugin -->
             <plugin>
                 <groupId>io.qameta.allure</groupId>
@@ -77,6 +103,7 @@
                     <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

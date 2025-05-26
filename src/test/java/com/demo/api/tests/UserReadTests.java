@@ -2,12 +2,16 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
+
 import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Covers pagination, user details, and sorting logic.
  */
 public class UserReadTests extends BaseTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserReadTests.class);
 
     /**
      * SEND:     GET https://reqres.in/api/users?page=2
@@ -47,9 +53,6 @@ public class UserReadTests extends BaseTest {
 
         // Verify that response status code is 200 OK
         assertEquals(200, response.getStatusCode(), "Expected 200 OK");
-
-        // Print response body
-        System.out.println("Response body :\n" + response.prettyPrint());
     }
 
     /**
@@ -169,8 +172,8 @@ public class UserReadTests extends BaseTest {
         String email = (String) firstUser.get("email");
 
         // Print extracted details to console
-        System.out.println("Extracted ID: " + id);
-        System.out.println("Extracted Email: " + email);
+        LOGGER.info("Extracted ID: " + id);
+        LOGGER.info("Extracted email: " + email);
 
         // Validate extracted values
         assertEquals(7, id);
@@ -211,11 +214,12 @@ public class UserReadTests extends BaseTest {
         allUsers.sort(Comparator.comparing(user -> user.get("first_name").toString()));
 
         // Print the sorted list (for logging/visual check)
+        LOGGER.info("Sorted Users by First Name: ");
         System.out.println("Sorted Users by First Name:");
         for (Map<String, Object> user : allUsers) {
             String name = user.get("first_name") + " " + user.get("last_name");
             String email = user.get("email").toString();
-            System.out.println(" - " + name + " | " + email);
+            LOGGER.info(" - " + name + " | " + email);
         }
 
         // Validate total number of users retrieved and sorted

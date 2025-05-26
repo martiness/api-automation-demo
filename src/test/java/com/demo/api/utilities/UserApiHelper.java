@@ -1,7 +1,11 @@
 package com.demo.api.utilities;
 
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -16,6 +20,8 @@ import static io.restassured.RestAssured.given;
  */
 public class UserApiHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserApiHelper.class);
+
     /**
      * Sends a POST request to create a new user.
      *
@@ -24,10 +30,22 @@ public class UserApiHelper {
      * @return the API response
      */
     public static Response createUser(RequestSpecification spec, Map<String, String> payload) {
-        return given()
+
+        LOGGER.info("Creating user with payload: {}", payload);
+
+        Response response = RestAssured
+                .given()
                 .spec(spec)
                 .body(payload)
                 .post("/api/users");
+
+        if (response.getStatusCode() >= 400) {
+            LOGGER.warn("Create user failed. Status: {}, Body: {}", response.getStatusCode(), response.asString());
+        } else {
+            LOGGER.debug("Response received: {}", response.asString());
+        }
+
+        return response;
     }
 
     /**
@@ -38,9 +56,17 @@ public class UserApiHelper {
      * @return the API response
      */
     public static Response deleteUserById(RequestSpecification spec, String userId) {
-        return given()
+
+        LOGGER.info("Deleting user with id: {}", userId);
+
+        Response response = RestAssured
+                .given()
                 .spec(spec)
                 .delete("/api/users/" + userId);
+
+        LOGGER.debug("Response received: {}", response.asString());
+
+        return response;
     }
 
     /**
@@ -51,9 +77,16 @@ public class UserApiHelper {
      * @return the API response
      */
     public static Response getUserById(RequestSpecification spec, int id) {
-        return given()
+        LOGGER.info("Getting user with id: {}", id);
+
+        Response response = RestAssured
+                .given()
                 .spec(spec)
                 .get("/api/users/" + id);
+
+        LOGGER.debug("Response received: {}", response.asString());
+
+        return response;
     }
 
     /**
@@ -64,9 +97,17 @@ public class UserApiHelper {
      * @return the API response
      */
     public static Response listUsers(RequestSpecification spec, int page) {
-        return given()
+
+        LOGGER.info("Listing users with page {}", page);
+
+        Response response = RestAssured
+                .given()
                 .spec(spec)
                 .queryParam("page", page)
                 .get("/api/users");
+
+        LOGGER.debug("Response received: {}", response.asString());
+
+        return response;
     }
 }

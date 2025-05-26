@@ -2,10 +2,20 @@ package com.demo.api.utilities;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import io.qameta.allure.Allure;
 import io.qameta.allure.junit5.AllureJunit5;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for configuring reusable REST-assured request specifications.
@@ -23,6 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(AllureJunit5.class)
 public abstract class BaseTest {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BaseTest.class);
 
     /** Request specification for endpoints that require authentication via API key. */
     protected RequestSpecification withApiKey;
@@ -53,8 +65,27 @@ public abstract class BaseTest {
                 .setContentType("application/json")
                 .build();
 
-        // Debug output (optional)
-        System.out.println("Base URL used: " + baseUrl);
-        System.out.println("[BaseTest] Setup complete before each test.");
+        // Debug log output
+        LOGGER.info("Base URI: {}", baseUrl);
+        LOGGER.info("Api Key: {}", apiKey);
+        LOGGER.debug("[BaseTest] Setup complete before each test.");
+    }
+
+    /**
+     * Attaches the execution log file to the Allure report after each test.
+     *
+     * <p>If a log file is found at {@code target/logs/test-info.log}, it is attached as a plain-text
+     * file to the Allure report to aid debugging and traceability.</p>
+     */
+    @AfterEach
+    void attachLogsToAllure() {
+        File logFile = new File("target/logs/test-info.log");
+        if (logFile.exists()) {
+            try (InputStream is = new FileInputStream(logFile)) {
+                Allure.addAttachment("Execution Log", "text/plain", is, ".log");
+            } catch (IOException e) {
+                System.err.println("Failed to attach log file to Allure report: " + e.getMessage());
+            }
+        }
     }
 }

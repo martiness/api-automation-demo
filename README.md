@@ -116,6 +116,37 @@ Sorted Users by First Name:
 
 ---
 
+## 📂 Logging and Debugging
+
+This project uses SLF4J with Logback for structured logging.
+
+    Logs are printed to the console
+
+    Persisted to target/logs/test-info.log
+
+    Automatically attached to the Allure report after each test
+
+Example output:
+```
+2025-05-26 12:45:30 INFO  BaseTest - Base URI: https://reqres.in
+2025-05-26 12:45:30 INFO  BaseTest - API Key: reqres-free-v1
+2025-05-26 12:45:31 INFO  UserApiHelper - Creating user with payload: {name=John_12345, job=QA}
+2025-05-26 12:45:31 WARN  UserApiHelper - Create user failed. Status: 400, Body: {...}
+```
+---
+
+## 📂 Allure Report Integration
+
+The log file is attached to each test case inside the Allure report under Attachments → Execution Log:
+
+```
+Allure.addAttachment("Execution Log", "text/plain", is, ".log");
+```
+
+This improves traceability, especially when debugging failed test scenarios.
+
+---
+
 ## 🧪 Allure Reporting
 
 After running the tests, generate and view the Allure HTML report with:

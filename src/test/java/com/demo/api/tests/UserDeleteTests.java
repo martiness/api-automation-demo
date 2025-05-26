@@ -2,13 +2,17 @@ package com.demo.api.tests;
 
 import com.demo.api.utilities.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
+
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Assumes the user has been previously created during test run.
  */
 public class UserDeleteTests extends BaseTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserDeleteTests.class);
     /**
      * Test aiming to delete a newly created user using DELETE request to /api/users/{id}.
      * FLOW:
@@ -48,7 +54,7 @@ public class UserDeleteTests extends BaseTest {
 
         // Extract user ID
         String userId = createResponse.jsonPath().getString("id");
-        System.out.println("Created user ID for deletion: " + userId);
+        LOGGER.info("Created user ID for deletion: " + userId);
 
         // Delete user via helper
         Response deleteResponse = UserApiHelper.deleteUserById(withApiKey, userId);
