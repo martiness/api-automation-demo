@@ -1,6 +1,6 @@
 package com.demo.api.tests;
 
-import com.demo.api.utilities.BaseTest;
+import com.demo.api.base.BaseTest;
 import com.demo.api.utilities.UserApiHelper;
 import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;

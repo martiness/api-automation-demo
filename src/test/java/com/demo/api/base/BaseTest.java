@@ -1,5 +1,6 @@
-package com.demo.api.utilities;
+package com.demo.api.base;
 
+import com.demo.api.utilities.Config;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.qameta.allure.Allure;
